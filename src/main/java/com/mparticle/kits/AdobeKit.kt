@@ -5,9 +5,7 @@ import android.content.Context
 import com.adobe.marketing.mobile.*
 import com.mparticle.BaseEvent
 import com.mparticle.MPEvent
-import com.mparticle.events.*
-import com.mparticle.internal.Logger
-import java.lang.Exception
+import com.mparticle.media.events.*
 
 class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
 
@@ -62,27 +60,27 @@ class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
                 currentPlayheadPosition = it
                 mediaTracker.updateCurrentPlayhead(it.toSeconds())
             }
-            when (event.type) {
-                MediaEventType.SessionStart -> sessionStart(event)
-                MediaEventType.SessionEnd -> sessionEnd()
-                MediaEventType.Play -> play()
-                MediaEventType.Pause -> pause()
-                MediaEventType.AdBreakEnd -> adBreakEnd(event)
-                MediaEventType.AdBreakStart -> adBreakStart(event)
-                MediaEventType.AdStart -> adStart(event)
-                MediaEventType.AdSkip, MediaEventType.AdEnd -> adEnd(event)
-                MediaEventType.UpdateQoS -> updateQos(event)
-                MediaEventType.BufferEnd -> bufferEnd(event)
-                MediaEventType.BufferStart -> bufferStart(event)
-                MediaEventType.SeekStart -> seekStart(event)
-                MediaEventType.SeekEnd -> seekEnd(event)
-                MediaEventType.SegmentStart -> segmentStart(event)
-                MediaEventType.SegmentSkip -> segmentSkip(event)
-                MediaEventType.SegmentEnd -> segmentEnd(event)
-                MediaEventType.UpdatePlayheadPosition -> {
+            when (event.eventName) {
+                MediaEventName.SESSION_START -> sessionStart(event)
+                MediaEventName.SESSION_END -> sessionEnd()
+                MediaEventName.PLAY -> play()
+                MediaEventName.PAUSE -> pause()
+                MediaEventName.AD_BREAK_END -> adBreakEnd(event)
+                MediaEventName.AD_BREAK_START -> adBreakStart(event)
+                MediaEventName.AD_START -> adStart(event)
+                MediaEventName.AD_SKIP, MediaEventName.AD_END -> adEnd(event)
+                MediaEventName.UPDATE_QOS -> updateQos(event)
+                MediaEventName.BUFFER_END -> bufferEnd(event)
+                MediaEventName.BUFFER_START -> bufferStart(event)
+                MediaEventName.SEEK_START -> seekStart(event)
+                MediaEventName.SEEK_END -> seekEnd(event)
+                MediaEventName.SEGMENT_START -> segmentStart(event)
+                MediaEventName.SEGMENT_SKIP -> segmentSkip(event)
+                MediaEventName.SEGMENT_END -> segmentEnd(event)
+                MediaEventName.UPDATE_PLAYHEAD_POSITION -> {
                     /** already handled */
                 }
-                MediaEventType.AdClick -> {
+                MediaEventName.AD_CLICK -> {
                     /** do nothing */
                 }
             }
@@ -115,7 +113,7 @@ class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
             val qoe = Media.createQoEObject(mediaQos.bitRate?.toLong() ?: 0,
                     mediaQos.startupTime?.toSeconds() ?: 0.0,
                     mediaQos.fps?.toDouble() ?: 0.0,
-                    mediaQos.droppedFrames.toLong())
+                    mediaQos.droppedFrames?.toLong() ?: 0)
             mediaTracker.updateQoEObject(qoe)
         }
     }
@@ -193,16 +191,15 @@ class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     }
 
     internal fun MediaAdBreak.getAdBreakObject(): Map<String?, Any?> {
-        val currentTime = currentPlaybackTime ?: currentPlayheadPosition
         return Media.createAdBreakObject(
                 title,
                 1L,
-                currentTime.toSeconds()
+                currentPlayheadPosition.toSeconds()
         )
     }
 
     internal fun MediaAd.getAdObject(): Map<String?, Any?> {
-        return Media.createAdObject(title, id, placement?.toLong() ?: 0, duration.toDouble())
+        return Media.createAdObject(title, id, placement?.toLong() ?: 0, duration?.toDouble() ?: 0.0)
     }
 
     internal fun MediaContent.getMediaType(): Media.MediaType? {

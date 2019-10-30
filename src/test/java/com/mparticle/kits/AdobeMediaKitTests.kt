@@ -5,8 +5,8 @@ import android.app.Application
 import android.content.Context
 import com.adobe.marketing.mobile.Media
 import com.adobe.marketing.mobile.MobileCore
-import com.mparticle.events.ContentType
-import com.mparticle.events.MediaContent
+import com.mparticle.media.events.ContentType
+import com.mparticle.media.events.MediaContent
 import junit.framework.Assert.*
 import org.junit.Test
 import org.mockito.Mockito
