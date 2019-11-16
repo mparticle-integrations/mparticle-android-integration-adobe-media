@@ -54,7 +54,7 @@ class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
         return null
     }
 
-    override fun logEvent(event: BaseEvent): MutableList<ReportingMessage>? {
+    override fun logBaseEvent(event: BaseEvent): MutableList<ReportingMessage>? {
         if (event is MediaEvent) {
             event.playheadPosition?.let {
                 currentPlayheadPosition = it
