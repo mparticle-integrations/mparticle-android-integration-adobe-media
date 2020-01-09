@@ -155,8 +155,8 @@ public abstract class AdobeKitBase extends KitIntegration implements KitIntegrat
 
     private String encodeIds() {
         String gaid = null;
-        MPUtility.AndroidAdIdInfo adId = MPUtility.getGoogleAdIdInfo(getContext());
-        if (adId != null) {
+        MPUtility.AdIdInfo adId = MPUtility.getAdIdInfo(getContext());
+        if (adId != null && adId.advertiser == MPUtility.AdIdInfo.Advertiser.GOOGLE) {
             gaid = adId.id;
         }
         String pushId = getKitManager().getPushInstanceId();
