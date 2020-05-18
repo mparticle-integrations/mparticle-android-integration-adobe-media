@@ -2,7 +2,11 @@ package com.mparticle.kits
 
 import android.app.Application
 import android.content.Context
+import android.provider.MediaStore
 import com.adobe.marketing.mobile.*
+import com.adobe.marketing.mobile.MediaConstants.AdMetadataKeys
+import com.adobe.marketing.mobile.MediaConstants.VideoMetadataKeys
+import com.adobe.primetime.va.Heartbeat
 import com.mparticle.BaseEvent
 import com.mparticle.MPEvent
 import com.mparticle.media.events.*
@@ -91,7 +95,7 @@ class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     private fun sessionStart(mediaEvent: MediaEvent) {
         if (!sessionStarted) {
             val mediaInfo = mediaEvent.mediaContent.getMediaObject()
-            mediaTracker.trackSessionStart(mediaInfo, mediaEvent.customAttributes)
+            mediaTracker.trackSessionStart(mediaInfo, mediaEvent.customAttributes?.toAdobeAttributes())
             sessionStarted = true
         }
     }
@@ -120,56 +124,56 @@ class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
 
     private fun adBreakStart(mediaEvent: MediaEvent) {
         val adBreakObject = mediaEvent.adBreak?.getAdBreakObject()
-        mediaTracker.trackEvent(Media.Event.AdBreakStart, adBreakObject, mediaEvent.customAttributes)
+        mediaTracker.trackEvent(Media.Event.AdBreakStart, adBreakObject, mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun adBreakEnd(mediaEvent: MediaEvent) {
         val adBreakObject = mediaEvent.adBreak?.getAdBreakObject()
-        mediaTracker.trackEvent(Media.Event.AdBreakComplete, adBreakObject, mediaEvent.customAttributes)
+        mediaTracker.trackEvent(Media.Event.AdBreakComplete, adBreakObject, mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun adStart(mediaEvent: MediaEvent) {
         val adBreakObject = mediaEvent.mediaAd?.getAdObject()
-        mediaTracker.trackEvent(Media.Event.AdStart, adBreakObject, mediaEvent.customAttributes)
+        mediaTracker.trackEvent(Media.Event.AdStart, adBreakObject, mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun adEnd(mediaEvent: MediaEvent) {
-        mediaTracker.trackEvent(Media.Event.AdComplete, mediaEvent.mediaAd?.getAdObject(), mediaEvent.customAttributes)
+        mediaTracker.trackEvent(Media.Event.AdComplete, mediaEvent.mediaAd?.getAdObject(), mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun seekEnd(mediaEvent: MediaEvent) {
         val mediaObject = mediaEvent.mediaContent.getMediaObject()
-        mediaTracker.trackEvent(Media.Event.SeekComplete, mediaObject, mediaEvent.customAttributes)
+        mediaTracker.trackEvent(Media.Event.SeekComplete, mediaObject, mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun seekStart(mediaEvent: MediaEvent) {
         val mediaObject = mediaEvent.mediaContent.getMediaObject()
-        mediaTracker.trackEvent(Media.Event.SeekStart, mediaObject, mediaEvent.customAttributes)
+        mediaTracker.trackEvent(Media.Event.SeekStart, mediaObject, mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun bufferEnd(mediaEvent: MediaEvent) {
         val mediaObject = mediaEvent.mediaContent.getMediaObject()
-        mediaTracker.trackEvent(Media.Event.BufferComplete, mediaObject, mediaEvent.customAttributes)
+        mediaTracker.trackEvent(Media.Event.BufferComplete, mediaObject, mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun bufferStart(mediaEvent: MediaEvent) {
         val mediaObject = mediaEvent.mediaContent.getMediaObject()
-        mediaTracker.trackEvent(Media.Event.BufferStart, mediaObject, mediaEvent.customAttributes)
+        mediaTracker.trackEvent(Media.Event.BufferStart, mediaObject, mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun segmentEnd(mediaEvent: MediaEvent) {
         val chapterObject = mediaEvent.segment?.getChapterObject()
-        mediaTracker.trackEvent(Media.Event.ChapterComplete, chapterObject, mediaEvent.customAttributes)
+        mediaTracker.trackEvent(Media.Event.ChapterComplete, chapterObject, mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun segmentSkip(mediaEvent: MediaEvent) {
         val chapterObject = mediaEvent.segment?.getChapterObject()
-        mediaTracker.trackEvent(Media.Event.ChapterSkip, chapterObject, mediaEvent.customAttributes)
+        mediaTracker.trackEvent(Media.Event.ChapterSkip, chapterObject, mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun segmentStart(mediaEvent: MediaEvent) {
         val chapterObject = mediaEvent.segment?.getChapterObject()
-        mediaTracker.trackEvent(Media.Event.ChapterStart, chapterObject, mediaEvent.customAttributes)
+        mediaTracker.trackEvent(Media.Event.ChapterStart, chapterObject, mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun MediaSegment.getChapterObject(): Map<String?, Any?> {
@@ -199,7 +203,8 @@ class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     }
 
     internal fun MediaAd.getAdObject(): Map<String?, Any?> {
-        return Media.createAdObject(title, id, placement?.toLong() ?: 0, duration?.toDouble() ?: 0.0)
+        return Media.createAdObject(title, id, placement?.toLong() ?: 0, duration?.toDouble()
+                ?: 0.0)
     }
 
     internal fun MediaContent.getMediaType(): Media.MediaType? {
@@ -209,6 +214,32 @@ class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
             else -> null
         }
     }
+
+    internal fun Map<String, String>.toAdobeAttributes(): Map<String, String> =
+            mapKeys { (key, _) ->
+                when (key) {
+                    MediaAttributeKeys.AD_ADVERTISING_ID -> AdMetadataKeys.ADVERTISER
+                    MediaAttributeKeys.AD_CAMPAIGN -> AdMetadataKeys.CAMPAIGN_ID
+                    MediaAttributeKeys.AD_CREATIVE -> AdMetadataKeys.CREATIVE_ID
+                    MediaAttributeKeys.AD_PLACEMENT -> AdMetadataKeys.PLACEMENT_ID
+                    MediaAttributeKeys.AD_SITE_ID -> AdMetadataKeys.SITE_ID
+                    EventAttributes.CONTENT_SHOW -> VideoMetadataKeys.SHOW
+                    EventAttributes.CONTENT_EPISODE -> VideoMetadataKeys.EPISODE
+                    EventAttributes.CONTENT_ASSET_ID -> VideoMetadataKeys.ASSET_ID
+                    EventAttributes.CONTENT_GENRE -> VideoMetadataKeys.GENRE
+                    EventAttributes.CONTENT_FIRST_AIR_DATE -> VideoMetadataKeys.FIRST_AIR_DATE
+                    EventAttributes.CONTENT_DIGITAL_DATE -> VideoMetadataKeys.FIRST_DIGITAL_DATE
+                    EventAttributes.CONTENT_RATING -> VideoMetadataKeys.RATING
+                    EventAttributes.CONTENT_ORIGINATOR -> VideoMetadataKeys.ORIGINATOR
+                    EventAttributes.CONTENT_NETWORK -> VideoMetadataKeys.NETWORK
+                    EventAttributes.CONTENT_SHOW_TYPE -> VideoMetadataKeys.SHOW_TYPE
+                    EventAttributes.CONTENT_MVPD -> VideoMetadataKeys.MVPD
+                    EventAttributes.CONTENT_AUTHORIZED -> VideoMetadataKeys.AUTHORIZED
+                    EventAttributes.CONTENT_DAYPART -> VideoMetadataKeys.DAY_PART
+                    EventAttributes.CONTENT_FEED -> VideoMetadataKeys.FEED
+                    else -> key
+                }
+            }
 
     internal fun Long.toSeconds(): Double {
         return toDouble() / 1000
