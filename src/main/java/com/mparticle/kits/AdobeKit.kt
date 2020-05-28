@@ -203,7 +203,7 @@ class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     }
 
     internal fun MediaAd.getAdObject(): Map<String?, Any?> {
-        return Media.createAdObject(title, id, placement?.toLong() ?: 0, duration?.toDouble()
+        return Media.createAdObject(title, id, position?.toLong() ?: 0, duration?.toDouble()
                 ?: 0.0)
     }
 
