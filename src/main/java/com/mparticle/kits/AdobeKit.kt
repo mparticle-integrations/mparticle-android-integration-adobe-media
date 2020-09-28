@@ -6,7 +6,6 @@ import android.provider.MediaStore
 import com.adobe.marketing.mobile.*
 import com.adobe.marketing.mobile.MediaConstants.AdMetadataKeys
 import com.adobe.marketing.mobile.MediaConstants.VideoMetadataKeys
-import com.adobe.primetime.va.Heartbeat
 import com.mparticle.BaseEvent
 import com.mparticle.MPEvent
 import com.mparticle.media.events.*
