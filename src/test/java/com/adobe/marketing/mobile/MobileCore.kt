@@ -45,9 +45,7 @@ class Signal: BaseAdobeExtension()
 class Media: BaseAdobeExtension() {
     companion object {
         @JvmStatic
-        fun createTracker(callback: AdobeCallback<MediaTracker>) {
-            callback.call(MediaTracker())
-        }
+        fun createTracker(): MediaTracker = MediaTracker()
     }
 
     enum class MediaType {
