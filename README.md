@@ -8,7 +8,7 @@ This repository contains the [Adobe Media](https://docs.adobe.com/content/help/e
 
     ```groovy
     dependencies {
-        compile 'com.mparticle:android-adobemedia-kit:5+'
+        implementation 'com.mparticle:android-adobemedia-kit:5+'
     }
     ```
 2. Follow the mParticle Android SDK [quick-start](https://github.com/mParticle/mparticle-android-sdk), then rebuild and launch your app, and verify that you see `"Adobe Media detected"` in the output of `adb logcat`.
