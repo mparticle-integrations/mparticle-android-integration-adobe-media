@@ -34,7 +34,7 @@ dependencies {
     implementation 'com.adobe.marketing.mobile:analytics:1.2.6'
     implementation 'com.adobe.marketing.mobile:media:2.1.0'
     implementation 'com.adobe.marketing.mobile:userprofile:1.1.0'
-    implementation 'com.adobe.marketing.mobile:sdk-core:1.5.8'
+    implementation 'com.adobe.marketing.mobile:sdk-core:1.6.0'
 
 
 }
