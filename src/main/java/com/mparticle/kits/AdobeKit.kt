@@ -12,7 +12,7 @@ import com.mparticle.media.events.*
 import java.util.*
 import kotlin.collections.HashMap
 
-class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
+open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
 
     internal val LAUNCH_APP_ID: String = "launchAppId"
 
