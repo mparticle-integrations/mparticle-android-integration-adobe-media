@@ -4,6 +4,7 @@ package com.mparticle.kits
 import android.app.Application
 import android.content.Context
 import com.adobe.marketing.mobile.Media
+import com.adobe.marketing.mobile.MediaTracker
 import com.adobe.marketing.mobile.MobileCore
 import com.mparticle.media.events.ContentType
 import com.mparticle.media.events.MediaContent
@@ -14,7 +15,10 @@ import java.util.*
 
 class AdobeMediaKitTests {
 
-    private fun getKit() = AdobeKit()
+    private fun getKit() = object: AdobeKit()  {
+        val tracker: MediaTracker?
+            get() { return super.mediaTracker }
+    }
 
     @Test
     fun testGetName() {
@@ -44,7 +48,7 @@ class AdobeMediaKitTests {
     fun testClassName() {
         val factory = KitIntegrationFactory()
         val integrations = factory.getKnownIntegrations()
-        val className = getKit()::class.java.getName()
+        val className = AdobeKit()::class.java.getName()
         assertEquals("$className not found as a known integration.",1, integrations.filterValues { it == className }.count())
     }
 
@@ -63,7 +67,7 @@ class AdobeMediaKitTests {
         kit.onKitCreate(settings, context)
 
         assertEquals(trackingServer, MobileCore.configKey)
-        assertNotNull(kit.mediaTracker)
+        assertNotNull(kit.tracker)
     }
 
     @Test
