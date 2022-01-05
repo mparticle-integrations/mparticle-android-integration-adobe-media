@@ -16,7 +16,7 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
 
     internal val LAUNCH_APP_ID: String = "launchAppId"
 
-    internal var mediaTracker: MediaTracker? = null
+    protected var mediaTracker: MediaTracker? = null
     private var currentPlayheadPosition: Long = 0
     private var sessionStarted = false
 
@@ -43,7 +43,7 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
 
     override fun setOptOut(optout: Boolean) = null
 
-    override fun logEvent(p0: MPEvent?) = null
+    override fun logEvent(p0: MPEvent) = null
 
     override fun leaveBreadcrumb(p0: String?) = null
 

@@ -42,11 +42,10 @@ class Lifecycle: BaseAdobeExtension()
 class Signal: BaseAdobeExtension()
 
 
-class Media: BaseAdobeExtension() {
-    companion object {
-        @JvmStatic
-        fun createTracker(): MediaTracker = MediaTracker()
-    }
+object Media: BaseAdobeExtension() {
+
+    @JvmStatic
+    fun createTracker(): MediaTracker = MediaTracker()
 
     enum class MediaType {
         Video,
@@ -54,5 +53,4 @@ class Media: BaseAdobeExtension() {
     }
 }
 
-class MediaTracker
-
+class MediaTracker { }
