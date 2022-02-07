@@ -18,7 +18,6 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
 
     protected var mediaTracker: MediaTracker? = null
     private var currentPlayheadPosition: Long = 0
-    private var sessionStarted = false
 
     override fun getName() = "Adobe Media"
 
@@ -91,11 +90,8 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     }
 
     private fun sessionStart(mediaEvent: MediaEvent) {
-        if (!sessionStarted) {
-            val mediaInfo = mediaEvent.mediaContent.getMediaObject()
-            mediaTracker?.trackSessionStart(mediaInfo, mediaEvent.customAttributes?.toAdobeAttributes())
-            sessionStarted = true
-        }
+        val mediaInfo = mediaEvent.mediaContent.getMediaObject()
+        mediaTracker?.trackSessionStart(mediaInfo, mediaEvent.customAttributes?.toAdobeAttributes())
     }
 
     private fun sessionEnd() {
