@@ -114,9 +114,9 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     private fun updateQos(mediaEvent: MediaEvent) {
         mediaEvent.qos?.let { mediaQos ->
             val qoe = Media.createQoEObject(mediaQos.bitRate?.toLong() ?: 0,
-                mediaQos.startupTime?.toSeconds() ?: 0.0,
-                mediaQos.fps?.toDouble() ?: 0.0,
-                mediaQos.droppedFrames?.toLong() ?: 0)
+                    mediaQos.startupTime?.toSeconds() ?: 0.0,
+                    mediaQos.fps?.toDouble() ?: 0.0,
+                    mediaQos.droppedFrames?.toLong() ?: 0)
             mediaTrackers[mediaEvent.sessionId]?.updateQoEObject(qoe)
         }
     }
@@ -177,33 +177,33 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
 
     private fun MediaSegment.getChapterObject(): Map<String?, Any?> {
         return Media.createChapterObject(title,
-            index?.toLong() ?: 0,
-            duration?.toDouble() ?: 0.0,
-            currentPlayheadPosition.toDouble()
+                index?.toLong() ?: 0,
+                duration?.toDouble() ?: 0.0,
+                currentPlayheadPosition.toDouble()
         )
     }
 
     internal fun MediaContent.getMediaObject(): HashMap<String?, Any?> {
         return Media.createMediaObject(
-            name,
-            contentId,
-            duration?.toSeconds() ?: 0.0,
-            streamType,
-            getMediaType()
+                name,
+                contentId,
+                duration?.toSeconds() ?: 0.0,
+                streamType,
+                getMediaType()
         )
     }
 
     internal fun MediaAdBreak.getAdBreakObject(): Map<String?, Any?> {
         return Media.createAdBreakObject(
-            title,
-            1L,
-            currentPlayheadPosition.toSeconds()
+                title,
+                1L,
+                currentPlayheadPosition.toSeconds()
         )
     }
 
     internal fun MediaAd.getAdObject(): Map<String?, Any?> {
         return Media.createAdObject(title, id, position?.toLong() ?: 0, duration?.toDouble()
-            ?: 0.0)
+                ?: 0.0)
     }
 
     internal fun MediaContent.getMediaType(): Media.MediaType? {
@@ -215,30 +215,30 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     }
 
     internal fun Map<String, String>.toAdobeAttributes(): Map<String, String> =
-        mapKeys { (key, _) ->
-            when (key) {
-                MediaAttributeKeys.AD_ADVERTISING_ID -> AdMetadataKeys.ADVERTISER
-                MediaAttributeKeys.AD_CAMPAIGN -> AdMetadataKeys.CAMPAIGN_ID
-                MediaAttributeKeys.AD_CREATIVE -> AdMetadataKeys.CREATIVE_ID
-                MediaAttributeKeys.AD_PLACEMENT -> AdMetadataKeys.PLACEMENT_ID
-                MediaAttributeKeys.AD_SITE_ID -> AdMetadataKeys.SITE_ID
-                EventAttributes.CONTENT_SHOW -> VideoMetadataKeys.SHOW
-                EventAttributes.CONTENT_EPISODE -> VideoMetadataKeys.EPISODE
-                EventAttributes.CONTENT_ASSET_ID -> VideoMetadataKeys.ASSET_ID
-                EventAttributes.CONTENT_GENRE -> VideoMetadataKeys.GENRE
-                EventAttributes.CONTENT_FIRST_AIR_DATE -> VideoMetadataKeys.FIRST_AIR_DATE
-                EventAttributes.CONTENT_DIGITAL_DATE -> VideoMetadataKeys.FIRST_DIGITAL_DATE
-                EventAttributes.CONTENT_RATING -> VideoMetadataKeys.RATING
-                EventAttributes.CONTENT_ORIGINATOR -> VideoMetadataKeys.ORIGINATOR
-                EventAttributes.CONTENT_NETWORK -> VideoMetadataKeys.NETWORK
-                EventAttributes.CONTENT_SHOW_TYPE -> VideoMetadataKeys.SHOW_TYPE
-                EventAttributes.CONTENT_MVPD -> VideoMetadataKeys.MVPD
-                EventAttributes.CONTENT_AUTHORIZED -> VideoMetadataKeys.AUTHORIZED
-                EventAttributes.CONTENT_DAYPART -> VideoMetadataKeys.DAY_PART
-                EventAttributes.CONTENT_FEED -> VideoMetadataKeys.FEED
-                else -> key
+            mapKeys { (key, _) ->
+                when (key) {
+                    MediaAttributeKeys.AD_ADVERTISING_ID -> AdMetadataKeys.ADVERTISER
+                    MediaAttributeKeys.AD_CAMPAIGN -> AdMetadataKeys.CAMPAIGN_ID
+                    MediaAttributeKeys.AD_CREATIVE -> AdMetadataKeys.CREATIVE_ID
+                    MediaAttributeKeys.AD_PLACEMENT -> AdMetadataKeys.PLACEMENT_ID
+                    MediaAttributeKeys.AD_SITE_ID -> AdMetadataKeys.SITE_ID
+                    EventAttributes.CONTENT_SHOW -> VideoMetadataKeys.SHOW
+                    EventAttributes.CONTENT_EPISODE -> VideoMetadataKeys.EPISODE
+                    EventAttributes.CONTENT_ASSET_ID -> VideoMetadataKeys.ASSET_ID
+                    EventAttributes.CONTENT_GENRE -> VideoMetadataKeys.GENRE
+                    EventAttributes.CONTENT_FIRST_AIR_DATE -> VideoMetadataKeys.FIRST_AIR_DATE
+                    EventAttributes.CONTENT_DIGITAL_DATE -> VideoMetadataKeys.FIRST_DIGITAL_DATE
+                    EventAttributes.CONTENT_RATING -> VideoMetadataKeys.RATING
+                    EventAttributes.CONTENT_ORIGINATOR -> VideoMetadataKeys.ORIGINATOR
+                    EventAttributes.CONTENT_NETWORK -> VideoMetadataKeys.NETWORK
+                    EventAttributes.CONTENT_SHOW_TYPE -> VideoMetadataKeys.SHOW_TYPE
+                    EventAttributes.CONTENT_MVPD -> VideoMetadataKeys.MVPD
+                    EventAttributes.CONTENT_AUTHORIZED -> VideoMetadataKeys.AUTHORIZED
+                    EventAttributes.CONTENT_DAYPART -> VideoMetadataKeys.DAY_PART
+                    EventAttributes.CONTENT_FEED -> VideoMetadataKeys.FEED
+                    else -> key
+                }
             }
-        }
 
     internal fun Long.toSeconds(): Double {
         return toDouble() / 1000
