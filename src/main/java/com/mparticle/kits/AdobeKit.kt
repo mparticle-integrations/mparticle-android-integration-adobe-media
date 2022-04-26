@@ -16,6 +16,7 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
 
     internal val LAUNCH_APP_ID: String = "launchAppId"
 
+    protected var defaultMediaTracker: MediaTracker? = null
     protected var mediaTrackers: MutableMap<String, MediaTracker?> = mutableMapOf()
     private var currentPlayheadPosition: Long = 0
 
@@ -36,6 +37,7 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
         MobileCore.start {
             MobileCore.configureWithAppID(appId)
         }
+        defaultMediaTracker = Media.createTracker()
         return listOf()
     }
 
@@ -50,8 +52,7 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     override fun logScreen(p0: String?, p1: MutableMap<String, String>?) = null
 
     override fun logError(errorString: String?, p1: MutableMap<String, String>?): List<ReportingMessage>? {
-        val tracker = mediaTrackers[p1?.get("media_session_id")]
-        tracker?.trackError(errorString)
+        defaultMediaTracker?.trackError(errorString)
         return null
     }
 
@@ -97,8 +98,9 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     }
 
     private fun sessionEnd(mediaEvent: MediaEvent) {
-        mediaTrackers[mediaEvent.sessionId]?.trackSessionEnd()
-        mediaTrackers[mediaEvent.sessionId] = null
+        val sessionId = mediaEvent.sessionId ?: return
+        mediaTrackers[sessionId]?.trackSessionEnd()
+        mediaTrackers[sessionId] = null
     }
 
     private fun play(mediaEvent: MediaEvent) {
