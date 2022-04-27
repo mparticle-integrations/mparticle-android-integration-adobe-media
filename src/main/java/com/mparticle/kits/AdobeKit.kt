@@ -17,7 +17,7 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     internal val LAUNCH_APP_ID: String = "launchAppId"
 
     protected var defaultMediaTracker: MediaTracker? = null
-    protected var mediaTrackers: MutableMap<String, MediaTracker?> = mutableMapOf()
+    protected var mediaTrackers: MutableMap<String, MediaTracker> = mutableMapOf()
     private var currentPlayheadPosition: Long = 0
 
     override fun getName() = "Adobe Media"
@@ -100,7 +100,7 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     private fun sessionEnd(mediaEvent: MediaEvent) {
         val sessionId = mediaEvent.sessionId ?: return
         mediaTrackers[sessionId]?.trackSessionEnd()
-        mediaTrackers[sessionId] = null
+        mediaTrackers.remove(sessionId)
     }
 
     private fun play(mediaEvent: MediaEvent) {
