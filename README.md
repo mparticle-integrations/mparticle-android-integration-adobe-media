@@ -18,7 +18,7 @@ Please note that the `adobemedia-kit` contains all the functionality of the `ado
 
 ### Documentation
 
-[Example integration](https://github.com/mParticle/mparticle-media-samples/tree/master/android-media-sample)
+[Example integration](https://github.com/mParticle/mparticle-media-samples/tree/master/android)
 
 ### License
 
