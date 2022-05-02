@@ -17,7 +17,7 @@ class AdobeMediaKitTests {
 
     private fun getKit() = object: AdobeKit()  {
         val tracker: MediaTracker?
-            get() { return super.mediaTracker }
+            get() { return super.defaultMediaTracker }
     }
 
     @Test
