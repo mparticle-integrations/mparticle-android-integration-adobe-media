@@ -220,8 +220,12 @@ public abstract class AdobeKitBase extends KitIntegration implements KitIntegrat
     private String getMarketingCloudId() {
         String marketingCloudId = getIntegrationAttributes().get(MARKETING_CLOUD_ID_KEY);
         if (KitUtils.isEmpty(marketingCloudId)) {
-            SharedPreferences adobeSharedPrefs = getContext().getSharedPreferences("APP_MEASUREMENT_CACHE", Context.MODE_PRIVATE);
-            marketingCloudId = adobeSharedPrefs.getString("ADBMOBILE_PERSISTED_MID", null);
+            SharedPreferences adobeSharedPrefs = getContext().getSharedPreferences("visitorIDServiceDataStore", Context.MODE_PRIVATE);
+            marketingCloudId = adobeSharedPrefs.getString("ADOBEMOBILE_PERSISTED_MID", null);
+            if (marketingCloudId == null) {
+                adobeSharedPrefs = getContext().getSharedPreferences("APP_MEASUREMENT_CACHE", Context.MODE_PRIVATE);
+                marketingCloudId = adobeSharedPrefs.getString("ADBMOBILE_PERSISTED_MID", null);
+            }
             if (!KitUtils.isEmpty(marketingCloudId)) {
                 setMarketingCloudId(marketingCloudId);
             }
