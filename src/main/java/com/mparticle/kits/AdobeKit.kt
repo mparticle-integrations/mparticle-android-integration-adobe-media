@@ -214,8 +214,8 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
         }
     }
 
-    internal fun Map<String, String>.toAdobeAttributes(): Map<String, String> =
-            mapKeys { (key, _) ->
+    internal fun <K: String?, V> Map<K, V>.toAdobeAttributes(): Map<String?, String?> =
+            entries.associate { (key, value) ->
                 when (key) {
                     MediaAttributeKeys.AD_ADVERTISING_ID -> AdMetadataKeys.ADVERTISER
                     MediaAttributeKeys.AD_CAMPAIGN -> AdMetadataKeys.CAMPAIGN_ID
@@ -237,7 +237,7 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
                     EventAttributes.CONTENT_DAYPART -> VideoMetadataKeys.DAY_PART
                     EventAttributes.CONTENT_FEED -> VideoMetadataKeys.FEED
                     else -> key
-                }
+                } to value.toString()
             }
 
     internal fun Long.toSeconds(): Double {
