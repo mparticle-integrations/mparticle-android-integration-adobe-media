@@ -205,7 +205,10 @@ public abstract class AdobeKitBase extends KitIntegration implements KitIntegrat
             String marketingCloudId = jsonObject.getString(D_MID_KEY);
             String dcsRegion = jsonObject.optString(DCS_REGION_KEY);
             String dBlob = jsonObject.optString(D_BLOB_KEY);
-            setMarketingCloudId(marketingCloudId);
+            String existingMarketingCloudId = getIntegrationAttributes().get(MARKETING_CLOUD_ID_KEY);
+            if (KitUtils.isEmpty(existingMarketingCloudId)) {
+                setMarketingCloudId(marketingCloudId);
+            }
             setDcsRegion(dcsRegion);
             setDBlob(dBlob);
         } catch (JSONException e) {
