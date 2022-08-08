@@ -2,29 +2,26 @@ package com.mparticle.kits
 
 import android.app.Application
 import android.content.Context
-import android.provider.MediaStore
 import com.adobe.marketing.mobile.*
 import com.adobe.marketing.mobile.MediaConstants.AdMetadataKeys
 import com.adobe.marketing.mobile.MediaConstants.VideoMetadataKeys
 import com.mparticle.BaseEvent
 import com.mparticle.MPEvent
 import com.mparticle.media.events.*
-import java.util.*
-import kotlin.collections.HashMap
 
 open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
 
     internal val LAUNCH_APP_ID: String = "launchAppId"
 
-    protected var defaultMediaTracker: MediaTracker? = null
-    protected var mediaTrackers: MutableMap<String, MediaTracker> = mutableMapOf()
-    private var currentPlayheadPosition: Long = 0
+    var defaultMediaTracker: MediaTracker? = null
+    var mediaTrackers: MutableMap<String, MediaTracker> = mutableMapOf()
+    var currentPlayheadPosition: Long = 0
 
     override fun getName() = "Adobe Media"
 
-    public override fun onKitCreate(settings: MutableMap<String, String>?, context: Context): List<ReportingMessage> {
+    public override fun onKitCreate(settings: Map<String, String>, context: Context): List<ReportingMessage> {
         super.onKitCreate(settings, context)
-        val appId = settings?.get(LAUNCH_APP_ID)
+        val appId = settings.get(LAUNCH_APP_ID)
 
         MobileCore.setApplication(context.applicationContext as Application)
         MobileServices.registerExtension()
@@ -41,7 +38,7 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
         return listOf()
     }
 
-    override fun setOptOut(optout: Boolean) = null
+    override fun setOptOut(optout: Boolean): List<ReportingMessage> = emptyList()
 
     override fun logEvent(p0: MPEvent) = null
 
@@ -243,6 +240,4 @@ open class AdobeKit: AdobeKitBase(), KitIntegration.EventListener {
     internal fun Long.toSeconds(): Double {
         return toDouble() / 1000
     }
-
-
 }
