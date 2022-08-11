@@ -22,8 +22,8 @@ class AdobeMediaKitTests {
 
     @Test
     fun testGetName() {
-        val name = getKit().getName()
-        assertTrue(name != null && name.length > 0)
+        val name = getKit().name
+        assertTrue(name.isNotEmpty())
     }
 
     /**
@@ -36,7 +36,7 @@ class AdobeMediaKitTests {
         try {
             val kit = getKit()
             val settings = HashMap<String, String>()
-            settings.put("fake setting", "fake")
+            settings["fake setting"] = "fake"
             kit.onKitCreate(settings, Mockito.mock(Context::class.java))
         }catch (ex: Exception) {
             e = ex
@@ -47,8 +47,8 @@ class AdobeMediaKitTests {
     @Test
     fun testClassName() {
         val factory = KitIntegrationFactory()
-        val integrations = factory.getKnownIntegrations()
-        val className = AdobeKit()::class.java.getName()
+        val integrations = factory.knownIntegrations
+        val className = AdobeKit()::class.java.name
         assertEquals("$className not found as a known integration.",1, integrations.filterValues { it == className }.count())
     }
 
@@ -60,7 +60,7 @@ class AdobeMediaKitTests {
         val context= Mockito.mock(Context::class.java)
         Mockito.`when`(context.applicationContext).thenReturn(Mockito.mock(Application::class.java))
 
-        kit.setKitManager(Mockito.mock(KitManagerImpl::class.java))
+        kit.kitManager = Mockito.mock(KitManagerImpl::class.java)
         Mockito.`when`(kit.kitManager.getIntegrationAttributes(Mockito.any(KitIntegration::class.java))).thenReturn(
                 mapOf(AdobeKitBase.MARKETING_CLOUD_ID_KEY to "not nothing")
         )

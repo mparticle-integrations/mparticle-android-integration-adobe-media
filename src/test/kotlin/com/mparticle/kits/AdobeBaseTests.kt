@@ -53,8 +53,8 @@ class AdobeBaseTests {
         val url1Split = Arrays.asList(*url1!!.split("&".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
         val url2Split = Arrays.asList(*url2!!.split("&".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
         Assert.assertEquals(url1Split.size.toLong(), url2Split.size.toLong())
-        Collections.sort(url1Split)
-        Collections.sort(url2Split)
+        url1Split.sort()
+        url2Split.sort()
         for (i in url1Split.indices) {
             if (url1Split[i] != url2Split[i])
                 Assert.assertTrue(false)

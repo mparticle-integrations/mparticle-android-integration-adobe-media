@@ -1,6 +1,6 @@
 buildscript {
     if (!ext.hasProperty("kotlin_version")) {
-        ext.kotlin_version = '1.6.20'
+        ext.kotlin_version = '1.7.10'
     }
     if (!project.hasProperty('version') || project.version.equals('unspecified')) {
         project.version = '+'
@@ -30,12 +30,9 @@ android {
 
 dependencies {
     api 'com.mparticle:android-media:1.4.1'
-
     api 'com.adobe.marketing.mobile:mobileservices:1.1.5'
     api 'com.adobe.marketing.mobile:analytics:1.2.10'
     api 'com.adobe.marketing.mobile:media:2.1.2'
     api 'com.adobe.marketing.mobile:userprofile:1.1.0'
     api 'com.adobe.marketing.mobile:sdk-core:1.11.1'
-
-
 }
