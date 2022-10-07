@@ -1,7 +1,5 @@
 buildscript {
-    if (!ext.hasProperty("kotlin_version")) {
-        ext.kotlin_version = '1.7.10'
-    }
+    ext.kotlin_version = '1.7.20'
     if (!project.hasProperty('version') || project.version.equals('unspecified')) {
         project.version = '+'
     }
@@ -20,11 +18,14 @@ buildscript {
 
 apply plugin: 'com.mparticle.kit'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
+    namespace 'com.mparticle.kits.adobemedia'
     defaultConfig {
         minSdkVersion 16
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 
