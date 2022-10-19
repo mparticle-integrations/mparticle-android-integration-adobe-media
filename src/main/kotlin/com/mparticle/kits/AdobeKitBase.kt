@@ -124,7 +124,6 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
             gaid = adId.id
         }
         val pushId = kitManager.pushInstanceId
-        val marketingCloudId = marketingCloudId
         val dBlob = dBlob
         val dcsRegion = dcsRegion
         return encodeIds(marketingCloudId, mOrgId, dBlob, dcsRegion, pushId, gaid, userIdentities)
@@ -178,24 +177,25 @@ abstract class AdobeKitBase : KitIntegration(), AttributeListener, PushListener,
      * fetch the MarketingCloudId. If it can't be found in our storage, assume that this
      * user is migrating from the Adobe SDK and try to fetch it from where the Adobe SDK would store it
      */
-    private var marketingCloudId: String? = null
+    private var marketingCloudId: String?
         get() {
-            val marketingCloudIdKey = integrationAttributes[MARKETING_CLOUD_ID_KEY]
+            var marketingCloudIdKey = integrationAttributes[MARKETING_CLOUD_ID_KEY]
             if (KitUtils.isEmpty(marketingCloudIdKey)) {
                 var adobeSharedPrefs =
                     context.getSharedPreferences("visitorIDServiceDataStore", Context.MODE_PRIVATE)
-                marketingCloudId = adobeSharedPrefs.getString("ADOBEMOBILE_PERSISTED_MID", null)
-                if (marketingCloudIdKey == null) {
+                marketingCloudIdKey = adobeSharedPrefs.getString("ADOBEMOBILE_PERSISTED_MID", null)
+                if (KitUtils.isEmpty(marketingCloudIdKey)) {
                     adobeSharedPrefs =
                         context.getSharedPreferences("APP_MEASUREMENT_CACHE", Context.MODE_PRIVATE)
-                    marketingCloudId = adobeSharedPrefs.getString("ADBMOBILE_PERSISTED_MID", null)
+                    marketingCloudIdKey = adobeSharedPrefs.getString("ADBMOBILE_PERSISTED_MID", null)
                 }
                 if (!KitUtils.isEmpty(marketingCloudIdKey)) {
-                    marketingCloudId = marketingCloudIdKey
+                    return marketingCloudIdKey
                 }
             }
-            return field
+            return marketingCloudIdKey
         }
+
         private set(id) {
             val integrationAttributes = integrationAttributes
             integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
