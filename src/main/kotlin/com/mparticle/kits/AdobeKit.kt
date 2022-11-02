@@ -121,8 +121,10 @@ open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
 
     fun setMarketingCloudId(id: String) {
         val integrationAttributes = integrationAttributes
-        integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
-        setIntegrationAttributes(integrationAttributes)
+        if(id.length > 0 && !id.equals(integrationAttributes[MARKETING_CLOUD_ID_KEY])) {
+            integrationAttributes[MARKETING_CLOUD_ID_KEY] = id
+            setIntegrationAttributes(integrationAttributes)
+        }
     }
 
     override fun setOptOut(optout: Boolean): List<ReportingMessage> = emptyList()
