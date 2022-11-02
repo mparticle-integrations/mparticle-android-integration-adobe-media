@@ -37,10 +37,12 @@ open class BaseAdobeExtension {
 class MobileServices: BaseAdobeExtension()
 class Analytics: BaseAdobeExtension()
 class UserProfile: BaseAdobeExtension()
-class Identity: BaseAdobeExtension()
 class Lifecycle: BaseAdobeExtension()
 class Signal: BaseAdobeExtension()
-
+object Identity: BaseAdobeExtension() {
+    @JvmStatic
+    fun getExperienceCloudId(callback: AdobeCallback<String>) { }
+}
 
 object Media: BaseAdobeExtension() {
 
@@ -53,4 +55,4 @@ object Media: BaseAdobeExtension() {
     }
 }
 
-class MediaTracker { }
+open class MediaTracker { }

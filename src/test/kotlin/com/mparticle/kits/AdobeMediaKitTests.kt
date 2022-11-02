@@ -1,6 +1,5 @@
 package com.mparticle.kits
 
-
 import android.app.Application
 import android.content.Context
 import com.adobe.marketing.mobile.Media
@@ -8,10 +7,11 @@ import com.adobe.marketing.mobile.MediaTracker
 import com.adobe.marketing.mobile.MobileCore
 import com.mparticle.media.events.ContentType
 import com.mparticle.media.events.MediaContent
-import junit.framework.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
-import java.util.*
 
 class AdobeMediaKitTests {
 
@@ -57,12 +57,12 @@ class AdobeMediaKitTests {
         val kit = getKit()
         val trackingServer = "launch app idea"
         val settings = mutableMapOf(AdobeKit().LAUNCH_APP_ID to trackingServer)
-        val context= Mockito.mock(Context::class.java)
+        val context = Mockito.mock(Context::class.java)
         Mockito.`when`(context.applicationContext).thenReturn(Mockito.mock(Application::class.java))
 
         kit.kitManager = Mockito.mock(KitManagerImpl::class.java)
         Mockito.`when`(kit.kitManager.getIntegrationAttributes(Mockito.any(KitIntegration::class.java))).thenReturn(
-                mapOf(AdobeKitBase.MARKETING_CLOUD_ID_KEY to "not nothing")
+            mapOf(AdobeKit().MARKETING_CLOUD_ID_KEY to "not nothing")
         )
         kit.onKitCreate(settings, context)
 
@@ -73,7 +73,7 @@ class AdobeMediaKitTests {
     @Test
     fun toSecondsTest() {
         getKit().apply {
-            assertEquals(1.001, 1001L.toSeconds())
+            assertEquals(1.001, 1001L.toSeconds(), 0.0)
         }
     }
 
