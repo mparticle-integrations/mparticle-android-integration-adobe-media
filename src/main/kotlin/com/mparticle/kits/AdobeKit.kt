@@ -53,9 +53,7 @@ open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
         Signal.registerExtension()
         MobileCore.start {
             MobileCore.configureWithAppID(appId)
-        }
-        Identity.getExperienceCloudId {
-            setMarketingCloudId(it)
+            syncIds()
         }
         defaultMediaTracker = Media.createTracker()
         return listOf()
