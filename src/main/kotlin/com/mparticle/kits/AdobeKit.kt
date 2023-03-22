@@ -9,6 +9,7 @@ import com.adobe.marketing.mobile.Lifecycle
 import com.adobe.marketing.mobile.Media
 import com.adobe.marketing.mobile.MediaConstants.AdMetadataKeys
 import com.adobe.marketing.mobile.MediaConstants.VideoMetadataKeys
+import com.adobe.marketing.mobile.MediaConstants
 import com.adobe.marketing.mobile.MediaTracker
 import com.adobe.marketing.mobile.MobileCore
 import com.adobe.marketing.mobile.MobileServices
@@ -18,6 +19,7 @@ import com.mparticle.BaseEvent
 import com.mparticle.MPEvent
 import com.mparticle.MParticle
 import com.mparticle.media.events.ContentType
+import com.mparticle.media.events.StreamType
 import com.mparticle.media.events.EventAttributes
 import com.mparticle.media.events.MediaAd
 import com.mparticle.media.events.MediaAdBreak
@@ -272,7 +274,7 @@ open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
             name,
             contentId,
             duration?.toSeconds() ?: 0.0,
-            streamType,
+            getStreamType(),
             getMediaType()
         )
     }
@@ -294,6 +296,23 @@ open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
         return when (contentType) {
             ContentType.AUDIO -> Media.MediaType.Audio
             ContentType.VIDEO -> Media.MediaType.Video
+            else -> null
+        }
+    }
+
+    internal fun MediaContent.getStreamType(): String? {
+        return when (streamType) {
+            StreamType.LIVE_STEAM -> MediaConstants.StreamType.LIVE
+            StreamType.LINEAR -> MediaConstants.StreamType.LINEAR
+            StreamType.ON_DEMAND -> {
+                when (contentType) {
+                    ContentType.AUDIO -> MediaConstants.StreamType.AOD
+                    ContentType.VIDEO -> MediaConstants.StreamType.VOD
+                    else -> null
+                }
+            }
+            StreamType.PODCAST -> MediaConstants.StreamType.PODCAST
+            StreamType.AUDIOBOOK -> MediaConstants.StreamType.AUDIOBOOK
             else -> null
         }
     }
