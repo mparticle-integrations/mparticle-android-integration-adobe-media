@@ -5,6 +5,7 @@ import android.content.Context
 import com.adobe.marketing.mobile.Media
 import com.adobe.marketing.mobile.MediaTracker
 import com.adobe.marketing.mobile.MobileCore
+import com.mparticle.MParticleOptions
 import com.mparticle.media.events.ContentType
 import com.mparticle.media.events.MediaContent
 import org.junit.Assert.assertEquals
@@ -46,10 +47,11 @@ class AdobeMediaKitTests {
 
     @Test
     fun testClassName() {
-        val factory = KitIntegrationFactory()
-        val integrations = factory.knownIntegrations
+        val options = Mockito.mock(MParticleOptions::class.java)
+        val factory = KitIntegrationFactory(options)
+        val integrations = factory.supportedKits.values
         val className = AdobeKit()::class.java.name
-        assertEquals("$className not found as a known integration.",1, integrations.filterValues { it == className }.count())
+        assertEquals("$className not found as a known integration.",1, integrations.filter { it.name == className }.count())
     }
 
     @Test
