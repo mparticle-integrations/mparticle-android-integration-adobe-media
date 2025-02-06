@@ -46,7 +46,6 @@ open class AdobeKit : KitIntegration.EventListener, KitIntegration(),
         val appId = settings.get(LAUNCH_APP_ID)
 
         MobileCore.setApplication(context.applicationContext as Application)
-       // MobileServices.registerExtension()
         val extensions = listOf(
             Analytics.EXTENSION,
             Media.EXTENSION,
@@ -55,7 +54,7 @@ open class AdobeKit : KitIntegration.EventListener, KitIntegration(),
             Lifecycle.EXTENSION,
             Signal.EXTENSION
         )
-        if (appId != null) {
+        appId?.let {
             MobileCore.configureWithAppID(appId)
         }
         MobileCore.registerExtensions(extensions){
@@ -311,7 +310,8 @@ open class AdobeKit : KitIntegration.EventListener, KitIntegration(),
         return when (contentType) {
             ContentType.AUDIO -> Media.MediaType.Audio
             ContentType.VIDEO -> Media.MediaType.Video
-            else -> Media.MediaType.Audio
+            //If the content type is null and this field must always have a value, then set the default value to MediaType.Video.
+            else -> Media.MediaType.Video
         }
     }
 
