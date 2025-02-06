@@ -286,7 +286,7 @@ open class AdobeKit : KitIntegration.EventListener, KitIntegration(),
             name ?: "",
             contentId ?: "",
             duration?.toSeconds() ?: 0.0,
-            getStreamType()?:"",
+            getStreamType() ?: "",
             getMediaType()
         )
     }
@@ -301,8 +301,10 @@ open class AdobeKit : KitIntegration.EventListener, KitIntegration(),
 
     internal fun MediaAd.getAdObject(): Map<String?, Any?> {
         return Media.createAdObject(
-            title ?: "", id ?: "", position?.toLong() ?: 0, duration?.toDouble()
-                ?: 0.0
+            title ?: "",
+            id ?: "",
+            position?.toLong() ?: 0,
+            duration?.toDouble() ?: 0.0
         )
     }
 
@@ -310,7 +312,7 @@ open class AdobeKit : KitIntegration.EventListener, KitIntegration(),
         return when (contentType) {
             ContentType.AUDIO -> Media.MediaType.Audio
             ContentType.VIDEO -> Media.MediaType.Video
-            //If the content type is null and this field must always have a value, then set the default value to MediaType.Video.
+            // Adobe requires that this be non-nullable now, but it should never reach this else statement.
             else -> Media.MediaType.Video
         }
     }
