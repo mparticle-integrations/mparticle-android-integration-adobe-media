@@ -7,9 +7,9 @@ import com.adobe.marketing.mobile.Analytics
 import com.adobe.marketing.mobile.Identity
 import com.adobe.marketing.mobile.Lifecycle
 import com.adobe.marketing.mobile.Media
+import com.adobe.marketing.mobile.MediaConstants
 import com.adobe.marketing.mobile.MediaConstants.AdMetadataKeys
 import com.adobe.marketing.mobile.MediaConstants.VideoMetadataKeys
-import com.adobe.marketing.mobile.MediaConstants
 import com.adobe.marketing.mobile.MediaTracker
 import com.adobe.marketing.mobile.MobileCore
 import com.adobe.marketing.mobile.MobileServices
@@ -19,7 +19,6 @@ import com.mparticle.BaseEvent
 import com.mparticle.MPEvent
 import com.mparticle.MParticle
 import com.mparticle.media.events.ContentType
-import com.mparticle.media.events.StreamType
 import com.mparticle.media.events.EventAttributes
 import com.mparticle.media.events.MediaAd
 import com.mparticle.media.events.MediaAdBreak
@@ -28,8 +27,9 @@ import com.mparticle.media.events.MediaContent
 import com.mparticle.media.events.MediaEvent
 import com.mparticle.media.events.MediaEventName
 import com.mparticle.media.events.MediaSegment
+import com.mparticle.media.events.StreamType
 
-open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
+open class AdobeKit : KitIntegration.EventListener, KitIntegration(),
     KitIntegration.AttributeListener, KitIntegration.PushListener,
     KitIntegration.ApplicationStateListener {
 
@@ -46,15 +46,18 @@ open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
         val appId = settings.get(LAUNCH_APP_ID)
 
         MobileCore.setApplication(context.applicationContext as Application)
-        MobileServices.registerExtension()
-        Analytics.registerExtension()
-        Media.registerExtension()
-        UserProfile.registerExtension()
-        Identity.registerExtension()
-        Lifecycle.registerExtension()
-        Signal.registerExtension()
-        MobileCore.start {
+        val extensions = listOf(
+            Analytics.EXTENSION,
+            Media.EXTENSION,
+            UserProfile.EXTENSION,
+            Identity.EXTENSION,
+            Lifecycle.EXTENSION,
+            Signal.EXTENSION
+        )
+        appId?.let {
             MobileCore.configureWithAppID(appId)
+        }
+        MobileCore.registerExtensions(extensions){
             syncIds()
         }
         defaultMediaTracker = Media.createTracker()
@@ -138,7 +141,9 @@ open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
     override fun logScreen(p0: String?, p1: MutableMap<String, String>?) = null
 
     override fun logError(errorString: String?, p1: MutableMap<String, String>?): List<ReportingMessage>? {
-        defaultMediaTracker?.trackError(errorString)
+        errorString?.let {
+            defaultMediaTracker?.trackError(errorString)
+        }
         return null
     }
 
@@ -199,10 +204,12 @@ open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
 
     private fun updateQos(mediaEvent: MediaEvent) {
         mediaEvent.qos?.let { mediaQos ->
-            val qoe = Media.createQoEObject(mediaQos.bitRate?.toLong() ?: 0,
+            val qoe = Media.createQoEObject(
+                mediaQos.bitRate?.toLong() ?: 0,
                 mediaQos.startupTime?.toSeconds() ?: 0.0,
                 mediaQos.fps?.toDouble() ?: 0.0,
-                mediaQos.droppedFrames?.toLong() ?: 0)
+                mediaQos.droppedFrames?.toLong() ?: 0
+            )
             mediaTrackers[mediaEvent.sessionId]?.updateQoEObject(qoe)
         }
     }
@@ -223,7 +230,11 @@ open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
     }
 
     private fun adEnd(mediaEvent: MediaEvent) {
-        mediaTrackers[mediaEvent.sessionId]?.trackEvent(Media.Event.AdComplete, mediaEvent.mediaAd?.getAdObject(), mediaEvent.customAttributes?.toAdobeAttributes())
+        mediaTrackers[mediaEvent.sessionId]?.trackEvent(
+            Media.Event.AdComplete,
+            mediaEvent.mediaAd?.getAdObject(),
+            mediaEvent.customAttributes?.toAdobeAttributes()
+        )
     }
 
     private fun seekEnd(mediaEvent: MediaEvent) {
@@ -262,7 +273,8 @@ open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
     }
 
     private fun MediaSegment.getChapterObject(): Map<String?, Any?> {
-        return Media.createChapterObject(title,
+        return Media.createChapterObject(
+            title ?: "",
             index?.toLong() ?: 0,
             duration?.toDouble() ?: 0.0,
             currentPlayheadPosition.toDouble()
@@ -271,32 +283,37 @@ open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
 
     internal fun MediaContent.getMediaObject(): HashMap<String?, Any?> {
         return Media.createMediaObject(
-            name,
-            contentId,
+            name ?: "",
+            contentId ?: "",
             duration?.toSeconds() ?: 0.0,
-            getStreamType(),
+            getStreamType() ?: "",
             getMediaType()
         )
     }
 
     internal fun MediaAdBreak.getAdBreakObject(): Map<String?, Any?> {
         return Media.createAdBreakObject(
-            title,
+            title ?: "",
             1L,
             currentPlayheadPosition.toSeconds()
         )
     }
 
     internal fun MediaAd.getAdObject(): Map<String?, Any?> {
-        return Media.createAdObject(title, id, position?.toLong() ?: 0, duration?.toDouble()
-            ?: 0.0)
+        return Media.createAdObject(
+            title ?: "",
+            id ?: "",
+            position?.toLong() ?: 0,
+            duration?.toDouble() ?: 0.0
+        )
     }
 
-    internal fun MediaContent.getMediaType(): Media.MediaType? {
+    internal fun MediaContent.getMediaType(): Media.MediaType {
         return when (contentType) {
             ContentType.AUDIO -> Media.MediaType.Audio
             ContentType.VIDEO -> Media.MediaType.Video
-            else -> null
+            // Adobe requires that this be non-nullable now, but it should never reach this else statement.
+            else -> Media.MediaType.Video
         }
     }
 
@@ -317,7 +334,7 @@ open class AdobeKit: KitIntegration.EventListener, KitIntegration(),
         }
     }
 
-    internal fun <K: String?, V> Map<K, V>.toAdobeAttributes(): Map<String?, String?> =
+    internal fun <K : String?, V> Map<K, V>.toAdobeAttributes(): Map<String?, String?> =
         entries.associate { (key, value) ->
             when (key) {
                 MediaAttributeKeys.AD_ADVERTISING_ID -> AdMetadataKeys.ADVERTISER
