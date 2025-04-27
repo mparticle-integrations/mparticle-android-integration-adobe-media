@@ -44,7 +44,7 @@ android {
 }
 
 dependencies {
-    api 'com.mparticle:android-media:1.5.0'
+    api 'com.mparticle:android-media:1.5.1'
     api 'com.adobe.marketing.mobile:mobileservices:1.1.5'
     api 'com.adobe.marketing.mobile:analytics:3.0.1'
     api 'com.adobe.marketing.mobile:media:3.1.0'
