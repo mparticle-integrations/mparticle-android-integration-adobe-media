@@ -15,14 +15,14 @@ import org.junit.Test
 import org.mockito.Mockito
 
 class AdobeMediaKitTests {
-
     private val kit: AdobeKit
-        get() = object : AdobeKit() {
-            val tracker: MediaTracker?
-                get() {
-                    return super.defaultMediaTracker
-                }
-        }
+        get() =
+            object : AdobeKit() {
+                val tracker: MediaTracker?
+                    get() {
+                        return super.defaultMediaTracker
+                    }
+            }
 
     @Test
     fun testGetName() {
@@ -59,12 +59,13 @@ class AdobeMediaKitTests {
 
     @Test
     fun testMediaConfig() {
-        val testKit = object : AdobeKit() {
-            val tracker: MediaTracker?
-                get() {
-                    return super.defaultMediaTracker
-                }
-        }
+        val testKit =
+            object : AdobeKit() {
+                val tracker: MediaTracker?
+                    get() {
+                        return super.defaultMediaTracker
+                    }
+            }
         val trackingServer = "launch app idea"
         val settings = mutableMapOf(AdobeKit.LAUNCH_APP_ID to trackingServer)
         val context = Mockito.mock(Context::class.java)
@@ -89,15 +90,17 @@ class AdobeMediaKitTests {
 
     @Test
     fun getMediaTypeTest() {
-        var mediaContent = MediaContent().apply {
-            contentType = ContentType.AUDIO
-        }
+        var mediaContent =
+            MediaContent().apply {
+                contentType = ContentType.AUDIO
+            }
         kit.apply {
             assertEquals(Media.MediaType.Audio, mediaContent.getMediaType())
         }
-        mediaContent = MediaContent().apply {
-            contentType = ContentType.VIDEO
-        }
+        mediaContent =
+            MediaContent().apply {
+                contentType = ContentType.VIDEO
+            }
         kit.apply {
             assertEquals(Media.MediaType.Video, mediaContent.getMediaType())
         }
