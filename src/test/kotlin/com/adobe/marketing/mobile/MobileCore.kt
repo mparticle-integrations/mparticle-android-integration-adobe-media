@@ -16,21 +16,20 @@ class MobileCore {
         fun configureWithAppID(key: String) {
             configKey = key
         }
+
         @JvmStatic
         fun registerExtensions(extensions: List<Class<out Extension>>, completionCallback: AdobeCallback<*>?) {
             // Method implementation here
         }
+
         @JvmStatic
         fun setApplication(application: Application) {}
     }
 }
 
-
 interface AdobeCallback<T> {
     fun call(t: T)
 }
-
-
 
 open class BaseAdobeExtension {
     internal abstract class AnalyticsExtension(extensionApi: ExtensionApi) : com.adobe.marketing.mobile.Extension(extensionApi) {
@@ -49,30 +48,30 @@ open class BaseAdobeExtension {
     companion object {
         @JvmField
         val EXTENSION: Class<out Extension> = AnalyticsExtension::class.java
+
         @JvmStatic
         fun registerExtension() {}
     }
 }
 
-class MobileServices: BaseAdobeExtension()
-class Analytics: BaseAdobeExtension()
-class UserProfile: BaseAdobeExtension()
-class Lifecycle: BaseAdobeExtension()
-class Signal: BaseAdobeExtension()
-object Identity: BaseAdobeExtension() {
+class MobileServices : BaseAdobeExtension()
+class Analytics : BaseAdobeExtension()
+class UserProfile : BaseAdobeExtension()
+class Lifecycle : BaseAdobeExtension()
+class Signal : BaseAdobeExtension()
+object Identity : BaseAdobeExtension() {
     @JvmStatic
-    fun getExperienceCloudId(callback: AdobeCallback<String>) { }
+    fun getExperienceCloudId(callback: AdobeCallback<String>) {}
 }
 
-object Media: BaseAdobeExtension() {
-
+object Media : BaseAdobeExtension() {
     @JvmStatic
     fun createTracker(): MediaTracker = MediaTracker()
 
     enum class MediaType {
         Video,
-        Audio;
+        Audio,
     }
 }
 
-open class MediaTracker { }
+open class MediaTracker

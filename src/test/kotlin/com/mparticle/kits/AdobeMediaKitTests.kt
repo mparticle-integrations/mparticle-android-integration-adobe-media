@@ -16,9 +16,11 @@ import org.mockito.Mockito
 
 class AdobeMediaKitTests {
 
-    private fun getKit() = object: AdobeKit()  {
+    private fun getKit() = object : AdobeKit() {
         val tracker: MediaTracker?
-            get() { return super.defaultMediaTracker }
+            get() {
+                return super.defaultMediaTracker
+            }
     }
 
     @Test
@@ -39,7 +41,7 @@ class AdobeMediaKitTests {
             val settings = HashMap<String, String>()
             settings["fake setting"] = "fake"
             kit.onKitCreate(settings, Mockito.mock(Context::class.java))
-        }catch (ex: Exception) {
+        } catch (ex: Exception) {
             e = ex
         }
         assertNotNull(e)
@@ -51,20 +53,20 @@ class AdobeMediaKitTests {
         val factory = KitIntegrationFactory(options)
         val integrations = factory.supportedKits.values
         val className = AdobeKit()::class.java.name
-        assertEquals("$className not found as a known integration.",1, integrations.filter { it.name == className }.count())
+        assertEquals("$className not found as a known integration.", 1, integrations.filter { it.name == className }.count())
     }
 
     @Test
     fun testMediaConfig() {
         val kit = getKit()
         val trackingServer = "launch app idea"
-        val settings = mutableMapOf(AdobeKit().LAUNCH_APP_ID to trackingServer)
+        val settings = mutableMapOf(AdobeKit.LAUNCH_APP_ID to trackingServer)
         val context = Mockito.mock(Context::class.java)
         Mockito.`when`(context.applicationContext).thenReturn(Mockito.mock(Application::class.java))
 
         kit.kitManager = Mockito.mock(KitManagerImpl::class.java)
         Mockito.`when`(kit.kitManager.getIntegrationAttributes(Mockito.any(KitIntegration::class.java))).thenReturn(
-            mapOf(AdobeKit().MARKETING_CLOUD_ID_KEY to "not nothing")
+            mapOf(AdobeKit.MARKETING_CLOUD_ID_KEY to "not nothing"),
         )
         kit.onKitCreate(settings, context)
 
@@ -94,5 +96,4 @@ class AdobeMediaKitTests {
             assertEquals(Media.MediaType.Video, mediaContent.getMediaType())
         }
     }
-
 }
