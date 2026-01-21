@@ -16,16 +16,17 @@ import org.mockito.Mockito
 
 class AdobeMediaKitTests {
 
-    private fun getKit() = object : AdobeKit() {
-        val tracker: MediaTracker?
-            get() {
-                return super.defaultMediaTracker
-            }
-    }
+    private val kit: AdobeKit
+        get() = object : AdobeKit() {
+            val tracker: MediaTracker?
+                get() {
+                    return super.defaultMediaTracker
+                }
+        }
 
     @Test
     fun testGetName() {
-        val name = getKit().name
+        val name = kit.name
         assertTrue(name.isNotEmpty())
     }
 
@@ -37,7 +38,7 @@ class AdobeMediaKitTests {
     fun testOnKitCreate() {
         var e: Exception? = null
         try {
-            val kit = getKit()
+            val kit: KitIntegration = kit
             val settings = HashMap<String, String>()
             settings["fake setting"] = "fake"
             kit.onKitCreate(settings, Mockito.mock(Context::class.java))
@@ -58,25 +59,30 @@ class AdobeMediaKitTests {
 
     @Test
     fun testMediaConfig() {
-        val kit = getKit()
+        val testKit = object : AdobeKit() {
+            val tracker: MediaTracker?
+                get() {
+                    return super.defaultMediaTracker
+                }
+        }
         val trackingServer = "launch app idea"
         val settings = mutableMapOf(AdobeKit.LAUNCH_APP_ID to trackingServer)
         val context = Mockito.mock(Context::class.java)
         Mockito.`when`(context.applicationContext).thenReturn(Mockito.mock(Application::class.java))
 
-        kit.kitManager = Mockito.mock(KitManagerImpl::class.java)
-        Mockito.`when`(kit.kitManager.getIntegrationAttributes(Mockito.any(KitIntegration::class.java))).thenReturn(
+        testKit.kitManager = Mockito.mock(KitManagerImpl::class.java)
+        Mockito.`when`(testKit.kitManager.getIntegrationAttributes(Mockito.any(KitIntegration::class.java))).thenReturn(
             mapOf(AdobeKit.MARKETING_CLOUD_ID_KEY to "not nothing"),
         )
-        kit.onKitCreate(settings, context)
+        testKit.onKitCreate(settings, context)
 
         assertEquals(trackingServer, MobileCore.configKey)
-        assertNotNull(kit.tracker)
+        assertNotNull(testKit.tracker)
     }
 
     @Test
     fun toSecondsTest() {
-        getKit().apply {
+        kit.apply {
             assertEquals(1.001, 1001L.toSeconds(), 0.0)
         }
     }
@@ -86,13 +92,13 @@ class AdobeMediaKitTests {
         var mediaContent = MediaContent().apply {
             contentType = ContentType.AUDIO
         }
-        getKit().apply {
+        kit.apply {
             assertEquals(Media.MediaType.Audio, mediaContent.getMediaType())
         }
         mediaContent = MediaContent().apply {
             contentType = ContentType.VIDEO
         }
-        getKit().apply {
+        kit.apply {
             assertEquals(Media.MediaType.Video, mediaContent.getMediaType())
         }
     }

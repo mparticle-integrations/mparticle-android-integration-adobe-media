@@ -54,6 +54,12 @@ android {
             jvmArgs += ['--add-opens', 'java.base/java.lang=ALL-UNNAMED']
         }
     }
+    lint {
+        // Workaround for lint internal crash
+        abortOnError false
+        // Ignore obsolete custom lint checks from older fragment library
+        disable 'ObsoleteLintCustomCheck'
+    }
 }
 
 dependencies {
