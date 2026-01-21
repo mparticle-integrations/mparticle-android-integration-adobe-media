@@ -1,3 +1,5 @@
 package com.mparticle.kits
 
-class AdobeApi(val marketingCloudID: String)
+class AdobeApi(
+    val marketingCloudID: String,
+)

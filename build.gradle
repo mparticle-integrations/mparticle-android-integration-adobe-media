@@ -68,6 +68,7 @@ repositories {
 }
 
 dependencies {
+    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     api 'com.mparticle:android-media:1.5.0'
     api 'com.adobe.marketing.mobile:mobileservices:1.1.5'
     api 'com.adobe.marketing.mobile:analytics:3.0.1'
