@@ -62,6 +62,11 @@ android {
     }
 }
 
+repositories {
+    google()
+    mavenCentral()
+}
+
 dependencies {
     api 'com.mparticle:android-media:1.5.0'
     api 'com.adobe.marketing.mobile:mobileservices:1.1.5'
