@@ -17,6 +17,10 @@ import com.adobe.marketing.mobile.UserProfile
 import com.mparticle.BaseEvent
 import com.mparticle.MPEvent
 import com.mparticle.MParticle
+import com.mparticle.kits.KitIntegration.ApplicationStateListener
+import com.mparticle.kits.KitIntegration.AttributeListener
+import com.mparticle.kits.KitIntegration.EventListener
+import com.mparticle.kits.KitIntegration.PushListener
 import com.mparticle.media.events.ContentType
 import com.mparticle.media.events.EventAttributes
 import com.mparticle.media.events.MediaAd
@@ -30,10 +34,10 @@ import com.mparticle.media.events.StreamType
 
 open class AdobeKit :
     KitIntegration(),
-    KitIntegration.EventListener,
-    KitIntegration.AttributeListener,
-    KitIntegration.PushListener,
-    KitIntegration.ApplicationStateListener {
+    EventListener,
+    AttributeListener,
+    PushListener,
+    ApplicationStateListener {
 
     companion object {
         internal const val MARKETING_CLOUD_ID_KEY = "mid"
